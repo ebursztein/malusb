@@ -30,10 +30,12 @@ where *IP* is the IP of the server and *PORT* is the TCP port you want the conne
 ## Manual configuration
 If you don't have python, something went wrong or want to do it manually. Here is
 what you need to do:
-  1. Edit the OSX payload from  **payload/payload_osx.txt** to
+  1. Edit the OSX payload from  **payload/payload_osx.sh** to
   replace the constant IP and PORT with the one from your server
-  2. Replace in **payload/payload.c** the OSX_PAYLOAD string with your customized payload
-  3. Edit the Windows payload from  **payload/payload_win.txt** and replace the constant IP and PORT with the one from your server
+  2. Replace in **payload/payload.c** the *OSX_PAYLOAD_STR* string with your customized payload
+  3. Edit the Windows payload from  **payload/payload_win.ps** and replace the constant IP and PORT with the one from your server
+  4. Compress and encode it with: `cat payload | gzip -c | base64`
+  5. Replace the *WIN_PAYLOAD_STR* string in the **payload/payload.c** with the output of the previous command. The *WIN_PAYLOAD_STR* string is in the middle of the Windows payload.
 
 # Compiling and uploading payload to the Teensy
 Once the payload is configured, to get your Teensy up and running all you need to do is:

