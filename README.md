@@ -4,7 +4,7 @@ This code allows to create a cross-platform HID spoofing payload that
 will spawn a reverse TCP-shell on Windows and OSX.
 
 It was developed as part of the presentation I made at Blackhat USA 2016:
-[Does Dropping USB drives in parking lots and other places really work?](http://www.elie.net/noyet) to show how to create realistic HID spoofing keys that can be used in USB key drop attack.
+[Does Dropping USB drives in parking lots and other places really work?](https://www.elie.net/publication/does-dropping-usb-drives-really-work) to show how to create realistic HID spoofing keys that can be used in USB key drop attack.
 
 For more information on how to make realistic HID spoofing key see my [blog post on the subject](https://www.elie.net/malus)
 
