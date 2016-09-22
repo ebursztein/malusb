@@ -51,8 +51,8 @@ try:
 except:
     print "can't find payload.c"
     sys.exit(-1)
-payload = payload.replace("OSX_PAYLOAD_STR", osx_payload)
-payload = payload.replace("WIN_PAYLOAD_STR", win_compressed_payload)
+payload = payload.replace("OSX_PAYLOAD_STR", osx_payload.replace("\n", ""))
+payload = payload.replace("WIN_PAYLOAD_STR", win_compressed_payload.replace("\n", ""))
 # dump final paylaod
 #dump configure payload
 f = open("payload_configured.c", "w+")
