@@ -1,4 +1,4 @@
-#HID spoofing multi-OS payload for Teensy
+# HID spoofing multi-OS payload for Teensy
 
 This code allows to create a cross-platform HID spoofing payload that
 will spawn a reverse TCP-shell on Windows and OSX.
